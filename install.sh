@@ -5,7 +5,7 @@
 #
 
 # Adjust the following env vars if needed.
-FUSE_ARTIFACT_ID=jboss-fuse-karaf-full
+FUSE_ARTIFACT_ID=jboss-fuse-full
 FUSE_DISTRO_URL=http://origin-repository.jboss.org/nexus/content/groups/ea/org/jboss/fuse/${FUSE_ARTIFACT_ID}/${FUSE_VERSION}/${FUSE_ARTIFACT_ID}-${FUSE_VERSION}.zip
 
 # Lets fail fast if any command in this script does succeed.
@@ -43,6 +43,7 @@ if [ -z "$FUSE_RUNTIME_ID" ]; then
 fi
 
 export KARAF_OPTS="-Dkaraf.name=${FUSE_KARAF_NAME} -Druntime.id=${FUSE_RUNTIME_ID}"
+export KARAF_OPTS="-Dnexus.addr=${NEXUS_PORT_8081_TCP_ADDR} -Dnexus.port=${NEXUS_PORT_8081_TCP_PORT} $KARAF_OPTS"
 '>> jboss-fuse/bin/setenv
 
 #
@@ -57,7 +58,23 @@ sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/
 sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/tmp"/' jboss-fuse/bin/client
 sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/tmp"/' jboss-fuse/bin/admin
 sed -i -e 's/${karaf.data}\/generated-bundles/${karaf.base}\/tmp\/generated-bundles/' jboss-fuse/etc/org.apache.felix.fileinstall-deploy.cfg
+
+#bind AMQ to all IP addresses
 sed -i -e 's/activemq.host = localhost/activemq.host = 0.0.0.0/' jboss-fuse/etc/system.properties
+
+# lets remove the karaf.delay.console=true to disable the progress bar
+# lets remove the karaf.delay.console=true to disable the progress bar
+sed -i -e 's/karaf.delay.console=true/karaf.delay.console=false/g' jboss-fuse/etc/config.properties
+sed -i -e 's/karaf.delay.console=true/karaf.delay.console=false/' jboss-fuse/etc/custom.properties
+echo '
+# Root logger
+log4j.rootLogger=INFO, stdout, osgi:*VmLogAppender
+log4j.throwableRenderer=org.apache.log4j.OsgiThrowableRenderer
+# CONSOLE appender not used by default
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{ABSOLUTE} | %-5.5p | %-16.16t | %-32.32c{1} | %X{bundle.id} - %X{bundle.name} - %X{bundle.version} | %m%n
+' > jboss-fuse/etc/org.ops4j.pax.logging.cfg
 
 echo '
 bind.address=0.0.0.0
@@ -65,5 +82,10 @@ bind.address=0.0.0.0
 echo '
 admin=admin,admin,manager,viewer,Operator, Maintainer, Deployer, Auditor, Administrator, SuperUser
 ' >> jboss-fuse/etc/users.properties
+
+# Add the nexus repos (uses the nexus link)
+sed -i -e '$s/repo$/&,http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/snapshots@id=nexus.snapshot.repo@snapshots/' \
+ jboss-fuse/etc/org.ops4j.pax.url.mvn.cfg
+
 
 rm /opt/jboss/install.sh
