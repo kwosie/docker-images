@@ -24,48 +24,31 @@ mv jboss-fuse-${FUSE_VERSION} jboss-fuse
 chmod a+x jboss-fuse/bin/*
 rm jboss-fuse/bin/*.bat jboss-fuse/bin/start jboss-fuse/bin/stop jboss-fuse/bin/status jboss-fuse/bin/patch
 
+
 # Lets remove some bits of the distro which just add extra weight in a docker image.
 rm -rf jboss-fuse/extras
 rm -rf jboss-fuse/quickstarts
 
-#
-# Let the karaf container name/id come from setting the FUSE_KARAF_NAME && FUSE_RUNTIME_ID env vars
-# default to using the container hostname.
-sed -i -e 's/environment.prefix=FABRIC8_/environment.prefix=FUSE_/' jboss-fuse/etc/system.properties
-sed -i -e '/karaf.name = root/d' jboss-fuse/etc/system.properties
-sed -i -e '/runtime.id=/d' jboss-fuse/etc/system.properties
-echo '
-if [ -z "$FUSE_KARAF_NAME" ]; then
-  export FUSE_KARAF_NAME="$HOSTNAME"
-fi
-if [ -z "$FUSE_RUNTIME_ID" ]; then
-  export FUSE_RUNTIME_ID="$FUSE_KARAF_NAME"
-fi
+sed -i -e 's/karaf.name = root/karaf.name = ${docker.hostname}/' jboss-fuse/etc/system.properties
 
-export KARAF_OPTS="-Dkaraf.name=${FUSE_KARAF_NAME} -Druntime.id=${FUSE_RUNTIME_ID}"
+# enable a link to a local nexus container
+echo '
 export KARAF_OPTS="-Dnexus.addr=${NEXUS_PORT_8081_TCP_ADDR} -Dnexus.port=${NEXUS_PORT_8081_TCP_PORT} $KARAF_OPTS"
+export KARAF_OPTS="-Ddocker.hostname=${HOSTNAME} $KARAF_OPTS"
 '>> jboss-fuse/bin/setenv
+# Add the nexus repos (uses the nexus link)
+sed -i -e '$s/repo$/&,http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/snapshots@id=nexus.snapshot.repo@snapshots/' \
+ jboss-fuse/etc/org.ops4j.pax.url.mvn.cfg
 
-#
-# Move the bundle cache and tmp directories outside of the data dir so it's not persisted between container runs
-#
-mv jboss-fuse/data/tmp jboss-fuse/tmp
-echo '
-org.osgi.framework.storage=${karaf.base}/tmp/cache
-'>> jboss-fuse/etc/config.properties
-sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/tmp"/' jboss-fuse/bin/karaf
-sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/tmp"/' jboss-fuse/bin/fuse
-sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/tmp"/' jboss-fuse/bin/client
-sed -i -e 's/-Djava.io.tmpdir="$KARAF_DATA\/tmp"/-Djava.io.tmpdir="$KARAF_BASE\/tmp"/' jboss-fuse/bin/admin
-sed -i -e 's/${karaf.data}\/generated-bundles/${karaf.base}\/tmp\/generated-bundles/' jboss-fuse/etc/org.apache.felix.fileinstall-deploy.cfg
 
 #bind AMQ to all IP addresses
 sed -i -e 's/activemq.host = localhost/activemq.host = 0.0.0.0/' jboss-fuse/etc/system.properties
 
 # lets remove the karaf.delay.console=true to disable the progress bar
-# lets remove the karaf.delay.console=true to disable the progress bar
 sed -i -e 's/karaf.delay.console=true/karaf.delay.console=false/g' jboss-fuse/etc/config.properties
 sed -i -e 's/karaf.delay.console=true/karaf.delay.console=false/' jboss-fuse/etc/custom.properties
+
+#enable the console logger
 echo '
 # Root logger
 log4j.rootLogger=INFO, stdout, osgi:*VmLogAppender
@@ -83,9 +66,6 @@ echo '
 admin=admin,admin,manager,viewer,Operator, Maintainer, Deployer, Auditor, Administrator, SuperUser
 ' >> jboss-fuse/etc/users.properties
 
-# Add the nexus repos (uses the nexus link)
-sed -i -e '$s/repo$/&,http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/snapshots@id=nexus.snapshot.repo@snapshots/' \
- jboss-fuse/etc/org.ops4j.pax.url.mvn.cfg
 
 
 rm /opt/jboss/install.sh
