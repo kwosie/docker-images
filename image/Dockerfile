@@ -19,9 +19,11 @@ ENV FUSE_PUBLIC_STOMP_SSL_PORT 61614
 
 # Install fuse in the image.
 COPY install.sh /opt/jboss/install.sh
+# Del next line
+COPY jboss-fuse-full-6.2.1.redhat-047.zip /opt/jboss/jboss-fuse-full-6.2.1.redhat-047.zip
 RUN /opt/jboss/install.sh
 
-EXPOSE 1099 2181 8101 8181 9300 9301 44444 61616 1883 5672 61613 61617 8883 5671 61614
+EXPOSE 1099 2181 8101 8181 9300 9301 44444 61616 1883 5672 61613 61617 8883 5671 61614 18000-18100 19000-19100
 
 #
 # The following directories can hold config/data, so lets suggest the user
