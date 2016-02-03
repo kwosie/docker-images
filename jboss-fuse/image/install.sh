@@ -37,7 +37,7 @@ export KARAF_OPTS="-Dnexus.addr=${NEXUS_PORT_8081_TCP_ADDR} -Dnexus.port=${NEXUS
 export KARAF_OPTS="-Ddocker.hostname=${HOSTNAME} $KARAF_OPTS"
 '>> jboss-fuse/bin/setenv
 # Add the nexus repos (uses the nexus link)
-+sed -i -e 's/springsource.external.repo$/&,http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/snapshots@id=nexus.snapshot.repo@snapshots/' \
+sed -i -e 's/springsource.external.repo$/&,http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/snapshots@id=nexus.snapshot.repo@snapshots/' \
   jboss-fuse/etc/org.ops4j.pax.url.mvn.cfg
 
 #bind AMQ to all IP addresses

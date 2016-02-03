@@ -3,7 +3,7 @@ FROM jboss/base-jdk:8
 MAINTAINER Raphael Parree <rparree@edc4it.com>
 
 # Set the FUSE_VERSION env variable
-ENV FUSE_VERSION 6.2.1.redhat-047
+ENV FUSE_VERSION 6.2.1.redhat-090
 # ENV FUSE_VERSION 6.2.1.redhat-041
 
 # If the container is launched with re-mapped ports, these ENV vars should
@@ -19,8 +19,8 @@ ENV FUSE_PUBLIC_STOMP_SSL_PORT 61614
 
 # Install fuse in the image.
 COPY install.sh /opt/jboss/install.sh
-# Del next line
-COPY jboss-fuse-full-6.2.1.redhat-047.zip /opt/jboss/jboss-fuse-full-6.2.1.redhat-047.zip
+
+#COPY jboss-fuse-full-6.2.1.redhat-090.zip /opt/jboss/jboss-fuse-full-6.2.1.redhat-090.zip
 RUN /opt/jboss/install.sh
 
 EXPOSE 1099 2181 8101 8181 9300 9301 44444 61616 1883 5672 61613 61617 8883 5671 61614 18000-18100 19000-19100
