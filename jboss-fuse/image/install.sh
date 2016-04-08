@@ -34,6 +34,7 @@ sed -i -e 's/karaf.name = root/karaf.name = ${docker.hostname}/' jboss-fuse/etc/
 # enable a link to a local nexus container
 echo '
 export KARAF_OPTS="-Dnexus.addr=${NEXUS_PORT_8081_TCP_ADDR} -Dnexus.port=${NEXUS_PORT_8081_TCP_PORT} $KARAF_OPTS"
+export KARAF_OPTS="-Dpostgres.addr=${POSTGRES_PORT_5432_TCP_ADDR} -Dpostgres.port=${POSTGRES_PORT_5432_TCP_PORT} $KARAF_OPTS"
 export KARAF_OPTS="-Ddocker.hostname=${HOSTNAME} $KARAF_OPTS"
 '>> jboss-fuse/bin/setenv
 # Add the nexus repos (uses the nexus link)
