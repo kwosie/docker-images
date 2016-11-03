@@ -1,3 +1,38 @@
+
+BEGIN;
+
+SET client_encoding = 'LATIN1';
+
+--
+-- Table used for authentication labs/demos
+--
+
+
+CREATE TABLE member (
+  username VARCHAR(1000) NOT NULL,
+  password VARCHAR(1000) NOT NULL,
+
+  PRIMARY KEY (username)
+);
+
+
+CREATE TABLE role (
+  username VARCHAR(1000) NOT NULL,
+  role VARCHAR(50) NOT NULL
+);
+
+--
+-- passwords as "secret"
+-- to generate use for example: echo -n secret | openssl dgst -md5 -binary | openssl base64
+--
+
+insert into member (username, password) values ('jenny','Xr4ilOzQ4PCOq3aQ0qbuaQ==');
+insert into member (username, password) values ('john','Xr4ilOzQ4PCOq3aQ0qbuaQ==');
+
+insert into role(username,role) values ('jenny','BronzeMember');
+insert into role(username,role) values ('jenny','SilverMember');
+insert into role(username,role) values ('john','BronzeMember');
+
 --
 -- PostgreSQL port of the MySQL "World" database.
 --
@@ -5,9 +40,6 @@
 -- Finland, http://www.stat.fi/worldinfigures.
 --
 
-BEGIN;
-
-SET client_encoding = 'LATIN1';
 
 CREATE TABLE city (
     id integer NOT NULL,
