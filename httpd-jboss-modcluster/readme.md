@@ -10,14 +10,13 @@ build the docker image
 $ docker build --tag com.edc4it/httpd-mod_cluster:1.0 .
 ```
 You need to run jboss using a hostname. This hostname must also be known to the docker
-container.
+container (using `--add-host`)
 
-In this example i am adding a specific host:
-
-```bash
-# on the host
-$ sudo '172.17.0.1 jboss.localhost' >> /etc/hosts
-```
+On the host set a hostname
+ ```bash
+ # on the host
+ $ sudo '172.17.0.1 jboss.localhost' >> /etc/hosts
+ ```
 
 ### Configure jboss
 
