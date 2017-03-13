@@ -6,25 +6,23 @@ Based on https://github.com/jboss-fuse/jboss-fuse-docker
 
 ## Usage
 
-### without local nexus
-
-You can then run a Fuse server with the following command:
-
-    docker run -Pd --name fuse --link nexus  rparree/jboss-fuse-full-admin
-
-I have enabled the admin=admin user
 
 ### With local nexus
 When running a nexus container (https://github.com/sonatype/docker-nexus):
 
 Start nexus (e.g, using the volume container approach for persistence)
 
-    docker run -it --name nexus-data sonatype/nexus echo "data-only container for Nexus"
-    docker run -d -p 8081:8081 --name nexus --volumes-from nexus-data sonatype/nexus
+    docker volume create --name nexus-data
+    docker run -d -p 8081:8081 --name nexus3 -v nexus-data:/nexus-data  sonatype/nexus3
+    
+Fuse connects to `snapshots` and `releases` maven repos (**make sure you configure these in nexus**) 
 
 Then run fuse:
 
-    docker run -Pd --name fuse --link nexus  rparree/jboss-fuse-full-admin
+    docker run -Pd --name fuse --link nexus3  rparree/jboss-fuse-full-admin
+
+I have enabled the admin=admin user
+
 
 ## Using the image
 

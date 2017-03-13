@@ -6,7 +6,7 @@
 
 # Adjust the following env vars if needed.
 FUSE_ARTIFACT_ID=jboss-fuse-full
-FUSE_DISTRO_URL=http://origin-repository.jboss.org/nexus/content/groups/ea/org/jboss/fuse/${FUSE_ARTIFACT_ID}/${FUSE_VERSION}/${FUSE_ARTIFACT_ID}-${FUSE_VERSION}.zip
+FUSE_DISTRO_URL=https://repository.jboss.org/nexus/content/groups/ea/org/jboss/fuse/${FUSE_ARTIFACT_ID}/${FUSE_VERSION}/${FUSE_ARTIFACT_ID}-${FUSE_VERSION}.zip
 
 # Lets fail fast if any command in this script does succeed.
 set -e
@@ -38,7 +38,7 @@ export KARAF_OPTS="-Dpostgres.addr=${POSTGRES_PORT_5432_TCP_ADDR} -Dpostgres.por
 export KARAF_OPTS="-Ddocker.hostname=${HOSTNAME} $KARAF_OPTS"
 '>> jboss-fuse/bin/setenv
 # Add the nexus repos (uses the nexus link)
-sed -i -e 's/springsource.external.repo$/&,http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/content\/repositories\/snapshots@id=nexus.snapshot.repo@snapshots/' \
+sed -i -e 's/fuseearlyaccess$/&,http:\/\/${nexus.addr}:${nexus.port}\/repository\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/repository\/snapshots@id=nexus.snapshot.repo@snapshots/' \
   jboss-fuse/etc/org.ops4j.pax.url.mvn.cfg
 
 #bind AMQ to all IP addresses
