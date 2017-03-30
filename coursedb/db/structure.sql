@@ -1,7 +1,7 @@
 
 BEGIN;
 
-SET client_encoding = 'LATIN1';
+SET client_encoding = 'UTF-8';
 
 --
 -- Table used for authentication labs/demos

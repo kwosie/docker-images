@@ -2,13 +2,19 @@ world database from http://pgfoundry.org/
 
 to build
 
-```
-$ docker build -t edc4it/coursedb:1.0 .
+```bash
+$ docker build -t edc4it/coursedb:2.0 .
 ```
 
 to run
 
-```
-$ docker run -p 5432:5432 -Pd --name coursedb edc4it/coursedb:1.0
+```bash
+$ docker run -p 5432:5432 -Pd --name coursedb edc4it/coursedb:2.0
 
+```
+
+Use psql client inside the container
+
+```bash
+docker exec -it coursedb psql -U postgres -h localhost -p 5432
 ```
