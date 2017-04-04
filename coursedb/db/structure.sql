@@ -29,9 +29,9 @@ CREATE TABLE role (
 insert into member (username, password) values ('jenny','Xr4ilOzQ4PCOq3aQ0qbuaQ==');
 insert into member (username, password) values ('john','Xr4ilOzQ4PCOq3aQ0qbuaQ==');
 
-insert into role(username,role) values ('jenny','BronzeMember');
-insert into role(username,role) values ('jenny','SilverMember');
-insert into role(username,role) values ('john','BronzeMember');
+insert into role(username,role) values ('jenny','StandardMember');
+insert into role(username,role) values ('jenny','PremiumMember');
+insert into role(username,role) values ('john','StandardMember');
 
 --
 -- PostgreSQL port of the MySQL "World" database.
