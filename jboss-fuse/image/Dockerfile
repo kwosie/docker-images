@@ -16,6 +16,10 @@ ENV FUSE_PUBLIC_STOMP_SSL_PORT 61614
 # Set the FUSE_VERSION env variable
 ENV FUSE_VERSION 6.3.0.redhat-077
 
+# install
+ENV FUSE_DISTRO_URL=https://repository.jboss.org/nexus/content/groups/ea/org/jboss/fuse/jboss-fuse-full/${FUSE_VERSION}/jboss-fuse-full-${FUSE_VERSION}.zip
+RUN curl -O ${FUSE_DISTRO_URL}
+
 # Install fuse in the image.
 COPY install.sh /opt/jboss/install.sh
 
@@ -24,13 +28,12 @@ RUN /opt/jboss/install.sh
 
 EXPOSE 1099 2181 8101 8181 9300 9301 44444 61616 1883 5672 61613 61617 8883 5671 61614 18000-18005 19000-19005
 
-#
-# The following directories can hold config/data, so lets suggest the user
-# mount them as volumes.
+
 VOLUME /opt/jboss/jboss-fuse/bin
 VOLUME /opt/jboss/jboss-fuse/etc
-VOLUME /opt/jboss/jboss-fuse/data
+VOLUME /opt/jboss/jboss-fuse/kahadb
 VOLUME /opt/jboss/jboss-fuse/deploy
+
 
 # lets default to the jboss-fuse dir so folks can more easily navigate to around the server install
 WORKDIR /opt/jboss/jboss-fuse

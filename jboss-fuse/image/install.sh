@@ -17,9 +17,9 @@ set -e
 cd /opt/jboss
 
 # Download and extract the distro
-curl -O ${FUSE_DISTRO_URL}
+
 jar -xvf ${FUSE_ARTIFACT_ID}-${FUSE_VERSION}.zip
-rm ${FUSE_ARTIFACT_ID}-${FUSE_VERSION}.zip
+rm jboss-fuse-full-${FUSE_VERSION}.zip
 mv jboss-fuse-${FUSE_VERSION} jboss-fuse
 chmod a+x jboss-fuse/bin/*
 rm jboss-fuse/bin/*.bat jboss-fuse/bin/start jboss-fuse/bin/stop jboss-fuse/bin/status jboss-fuse/bin/patch
@@ -43,6 +43,8 @@ sed -i -e 's/fuseearlyaccess$/&,http:\/\/${nexus.addr}:${nexus.port}\/repository
 
 #bind AMQ to all IP addresses
 sed -i -e 's/activemq.host = localhost/activemq.host = 0.0.0.0/' jboss-fuse/etc/system.properties
+mkdir -p /opt/jboss/jboss-fuse/kahadb
+sed -i -e 's/${data}\/kahadb/\/opt\/jboss\/jboss-fuse\/kahadb/' jboss-fuse/etc/activemq.xml
 
 # lets remove the karaf.delay.console=true to disable the progress bar
 sed -i -e 's/karaf.delay.console=true/karaf.delay.console=false/g' jboss-fuse/etc/config.properties
