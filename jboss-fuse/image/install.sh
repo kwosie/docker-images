@@ -38,7 +38,7 @@ export KARAF_OPTS="-Dpostgres.addr=${POSTGRES_PORT_5432_TCP_ADDR} -Dpostgres.por
 export KARAF_OPTS="-Ddocker.hostname=${HOSTNAME} $KARAF_OPTS"
 '>> jboss-fuse/bin/setenv
 # Add the nexus repos (uses the nexus link)
-sed -i -e 's/fuseearlyaccess$/&,http:\/\/${nexus.addr}:${nexus.port}\/repository\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/repository\/snapshots@id=nexus.snapshot.repo@snapshots/' \
+sed -i -e 's/fuseearlyaccess$/&,http:\/\/${nexus.addr}:${nexus.port}\/repository\/releases@id=nexus.release.repo,  http:\/\/${nexus.addr}:${nexus.port}\/repository\/snapshots@id=nexus.snapshot.repo@snapshots,http:\/\/${nexus.addr}:${nexus.port}\/nexus\/content\/repositories\/snapshots@id=nexus2.snapshot.repo@snapshots, http:\/\/${nexus.addr}:${nexus.port}\/nexus\/content\/repositories\/releases@id=nexus2.releases.repo/' \
   jboss-fuse/etc/org.ops4j.pax.url.mvn.cfg
 
 #bind AMQ to all IP addresses
