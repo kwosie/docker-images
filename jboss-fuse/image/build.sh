@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DOCKER_IMAGE_NAME=rparree/jboss-fuse-full-admin
+DOCKER_IMAGE_NAME=kwosie/jboss-fuse
 DOCKER_IMAGE_VERSION=6.3.0_1
 
 #docker rmi --force=true ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
